@@ -4,12 +4,12 @@ import "./index.css"
 
 
 
-const LineItems = ({item,handleClick,handleDelete,key}) =>{
+const LineItems = ({item,handleClick,handleDelete}) =>{
     const listStyles = {
         display: "flex",
         alignItems: "center",
         justifyContent: "space-evenly",
-        width: "45%",
+        width: "400px",
         height: "70px",
         backgroundColor: "lightblue",
     };
@@ -55,7 +55,7 @@ const LineItems = ({item,handleClick,handleDelete,key}) =>{
                     handleDelete(item.id);
                     }
                 }
-                aria-label = {`Delete ${item.item}`}
+                aria-label = {`Delete ${item}`}
             />
   
         </li>   

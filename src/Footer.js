@@ -9,8 +9,6 @@ const Footer = (props) =>{
     )
 }
 
-Footer.defaultProps = {
-    count : 0
-};
+
 
 export default Footer;

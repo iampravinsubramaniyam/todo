@@ -12,10 +12,7 @@ const Header = (props)=>{
 }
 
 
-Header.defaultProps = {
-    title : "praveen"
-};
-
-
 
 export default Header;
+
+
