@@ -4,60 +4,118 @@ import Header from './Header.js';
 import Footer from './Footer.js';
 import AddItems from './AddItems.js';
 import SearchItem from './SearchItem.js';
-import { useState } from 'react';
+import apiRequest from './apiRequest.js';
+
+import { useState, useEffect } from 'react';
 
 
 function App() {
 
-    const [data,setData] = useState(JSON.parse(window.localStorage.getItem("list_items")));
+    const API_URL = 'http://localhost:3500/items';
+
+    const [data,setData] = useState([]);
 
     const [newItem,setNewItem] = useState('');
-    const[search,setSearch] = useState('');
+    const [search,setSearch] = useState('');
+    const [fetchError,setFetchError] = useState(null);
+    const [loading, setLoading] = useState('Loading');
+    const [checkItems,setCheckItems] = useState(false);
 
-    const addItem = (enteredContent) =>{
+
+    /////////////////////////////////    CREATE       /////////////////////////
+
+    const addItem =  async (enteredContent) =>{
         const newID = data.length?data[data.length-1].id+1:1;
         const newItem = {
             id:newID,
             content:enteredContent,
-            confirmed: false,
-            strike:{
-                textDecoration: ""
-             }
+            checked: false
         }
-
-        console.log(newID);
 
         const oldList = [...data,newItem];
         setData(oldList)
-        window.localStorage.setItem("list_items",JSON.stringify(oldList));
+
+        const post = {
+            method : "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(newItem)
+        }
+
+
+        const result = await apiRequest(API_URL,post)
+
+        if(result){
+            setFetchError(result);
+        }
+
+        // window.localStorage.setItem("list_items",JSON.stringify(oldList));
     }
+ 
 
-    const handleClick = (key) =>{
 
-        const dup = data.map((item) => item.id === key?{
+
+
+    //////////////////// UPDATE ///////////////////////////
+
+    const handleClick = async (id) =>{
+
+        const dup = data.map((item) => item.id === id?{
             ...item,
-            confirmed: !item.confirmed,
-            strike: !item.confirmed?{
-                textDecoration:"line-through",
-            }:{
-                textDecoration:"",
-            }
+            checked: !item.checked
         }:item)
+
+        // console.log(dup)
 
 
         setData(dup);
 
-        window.localStorage.setItem("list_items",JSON.stringify(dup));
+        const myItem = dup.filter((item)=> item.id === id)
+
+
+        const updateOption = {
+            method : 'PATCH',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({checked:myItem[0].checked})
+        }
+
+
+        const reqUrl = `${API_URL}/${id}`;
+
+        const result = await apiRequest(reqUrl,updateOption);
+
+        if(result){
+            setFetchError(result);
+        }
+
+        // window.localStorage.setItem("list_items",JSON.stringify(dup));
     }
 
 
+    //////////////////////////////////         DELETE       ////////////////////////////
 
-    const handleDelete = (id) =>{
+
+    const handleDelete = async (id) =>{
         const dup = data.filter((item) => 
             item.id !== id)
 
         setData(dup);
-        window.localStorage.setItem("list_items",JSON.stringify(dup));
+
+        const deleteOptions = {
+            method: 'DELETE'
+        }
+
+        const reqUrl = `${API_URL}/${id}`
+
+        const result = await apiRequest(reqUrl,deleteOptions);
+
+        if(result){
+            alert(result)
+            setFetchError(result);
+        }
     }
 
 
@@ -69,13 +127,52 @@ function App() {
     }
 
 
+    //fetching items from db.json file 
+    //using dummy server => npx json-server -p 3500 -w data/db.json
+
+
+
+    ////////////////////////////////////   READ       ////////////////////////////////
+
+    useEffect(()=> {
+        // setData(JSON.parse(window.localStorage.getItem("list_items")))
+        // console.log("hi")
+
+        const fetchItems = async () =>{
+            try{
+                const response = await fetch(API_URL);
+                if(!response.ok){
+                    throw Error("Data not Recieved")
+                }else{
+                    setLoading('')
+                    setCheckItems(true);
+                };
+
+                const listItems = await response.json();
+                setData(listItems);
+                setFetchError(null);
+                
+            }catch(err){
+                setLoading('');
+                setFetchError(err.message);
+            }
+        }
+
+        setTimeout(()=>{
+            (async () => fetchItems())()
+        },1000);
+
+    },[])
+
+
 
 
     return (
-        <main>
+        <div>
             <Header 
                 title = "todo list"
             />
+
             <AddItems 
                 newItem = {newItem}
                 setNewItem = {setNewItem}
@@ -87,15 +184,21 @@ function App() {
                 setSearch  = {setSearch}
             />
 
-            <Content
-                data  = {data.filter(data => ((data.content).toLowerCase()).includes(search.toLowerCase()))}
-                handleClick = {handleClick}
-                handleDelete = {handleDelete}
-            />
+            <main>
+                {fetchError && <p>{`Error : ${fetchError}`}</p>}
+                <p>{loading}</p>
+
+                <Content
+                    data  = {data.filter(data => ((data.content).toLowerCase()).includes(search.toLowerCase()))}
+                    handleClick = {handleClick}
+                    handleDelete = {handleDelete}
+                    checkItems = {checkItems}
+                />
+            </main>
 
             <Footer count = {data.length}/>
 
-        </main>
+        </div>
     );
 }
 

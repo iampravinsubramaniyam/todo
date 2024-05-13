@@ -3,12 +3,12 @@ import "./index.css";
 import ItemsList from './ItemsList.js';
 
 
-const Content = ({data,handleClick,handleDelete}) =>{
+const Content = ({data,handleClick,handleDelete,checkItems}) =>{
 //rendering
 
     return(
    
-        <div className = "content" count = "1">
+        <>
             {(data.length)?(
                 <ItemsList 
                     data = {data}
@@ -16,10 +16,10 @@ const Content = ({data,handleClick,handleDelete}) =>{
                     handleDelete = {handleDelete}
                 />
                 ):(
-                    <p>No Items</p>
+                    <p>{checkItems?"No Items":""}</p>
                 )
             }
-        </div>
+        </>
     )
 }
 

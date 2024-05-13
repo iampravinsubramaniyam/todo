@@ -32,7 +32,7 @@ const LineItems = ({item,handleClick,handleDelete}) =>{
         <li style = {listStyles}>
             <input
                 type="checkbox" 
-                checked = {item.confirmed} 
+                checked = {item.checked} 
                 style = {inputStyles}
                 onChange={()=>{
                     handleClick(item.id);
@@ -40,7 +40,7 @@ const LineItems = ({item,handleClick,handleDelete}) =>{
             />
 
             <div 
-                style = {item.strike}
+                style = {item.checked?{textDecoration:"line-through"}: {textDecoration :"none"}}
                 onDoubleClick={()=>{
                     handleClick(item.id);
                 }}
