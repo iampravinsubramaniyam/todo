@@ -16,7 +16,7 @@ const Content = ({data,handleClick,handleDelete}) =>{
                     handleDelete = {handleDelete}
                 />
                 ):(
-                    <p>List is Empty</p>
+                    <p>No Items</p>
                 )
             }
         </div>

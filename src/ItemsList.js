@@ -2,8 +2,12 @@ import React from 'react'
 import LineItems from './LineItems';
 
 const ItemsList = ({data,handleClick,handleDelete}) =>{
+    const ulStyles = {
+        marginBottom : "10vh"
+    }
+
     return(
-        <ul>
+        <ul style = {ulStyles}>
             {
                 data.map((item)=>(
                     <LineItems

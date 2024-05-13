@@ -8,8 +8,9 @@ const LineItems = ({item,handleClick,handleDelete}) =>{
     const listStyles = {
         display: "flex",
         alignItems: "center",
-        justifyContent: "space-evenly",
-        width: "400px",
+        justifyContent: "space-between",
+        padding: "0px 20px",
+        width: "350px",
         height: "70px",
         backgroundColor: "lightblue",
     };

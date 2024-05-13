@@ -52,7 +52,7 @@ ul,.content{
 
 .footer{
   width: 100%;
-  height: 10vh;
+  height: 5vh;
   background-color: rgb(53, 165, 202);
   position: fixed;
   bottom: 0;
@@ -62,7 +62,6 @@ ul,.content{
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  display: none;
 }
 
 
@@ -112,4 +111,13 @@ button{
   padding-left: 12px;
   border-radius: 5px;
   font-size: 1.2rem;
+}
+
+.searchItem{
+  height: 10vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 5vh;
 }
